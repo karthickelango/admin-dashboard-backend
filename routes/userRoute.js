@@ -1,9 +1,23 @@
 import express from 'express'
 import { User } from '../model/userSchema.js'
 import jwt from "jsonwebtoken";
+import multer from 'multer';
 
 const router = express.Router()
 const SECRET_KEY = 'key'
+
+// image uploader folder
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        return cb(null, './profileImages')
+    },
+    filename: function (req, file, cb) {
+        return cb(null, `${Date.now()}_${file.originalname}`)
+    }
+})
+
+const upload = multer({ storage })
 
 
 // get login POST method 
@@ -35,7 +49,8 @@ router.post('/register', async (req, res) => {
         const newUser = {
             email,
             username,
-            password: password
+            password: password,
+            avatar: null
         }
         const user = await User.create(newUser)
         return res.status(201).send(user)
@@ -66,6 +81,18 @@ router.get('/:id', async (req, res) => {
         const { id } = req.params
         const user = await User.findById(id)
         return res.status(200).json(user)
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
+
+// upload user image
+router.put('/upload/:id', upload.single('file'), async (req, res) => {
+    try {
+        const { id } = req.params
+        const avatar = await User.findByIdAndUpdate(id, { avatar: req.file.filename })
+        return res.status(201).send({ message: "Updated" })
     }
     catch (error) {
         console.log(error)

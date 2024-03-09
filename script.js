@@ -7,6 +7,8 @@ import userRoures from "./routes/userRoute.js"
 const app = express()
 app.use(express.json())
 app.use(cors())
+app.use(express.static('profileImages'))
+
 
 app.get('/', (req, res) => {
     return res.status(234).send('Admin')
