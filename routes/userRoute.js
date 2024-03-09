@@ -50,7 +50,10 @@ router.post('/register', async (req, res) => {
             email,
             username,
             password: password,
-            avatar: null
+            avatar: null,
+            about: null,
+            role: null,
+            contact: null
         }
         const user = await User.create(newUser)
         return res.status(201).send(user)
@@ -92,6 +95,18 @@ router.put('/upload/:id', upload.single('file'), async (req, res) => {
     try {
         const { id } = req.params
         const avatar = await User.findByIdAndUpdate(id, { avatar: req.file.filename })
+        return res.status(201).send({ message: "Updated" })
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
+
+// upload info
+router.put('/info/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const Info = await User.findByIdAndUpdate(id, req.body)
         return res.status(201).send({ message: "Updated" })
     }
     catch (error) {
