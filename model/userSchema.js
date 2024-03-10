@@ -7,7 +7,8 @@ const userSchema = mongoose.Schema({
     avatar: {type: String},
     about:{type: String},
     role: {type: String},
-    contact: {type: String}
+    contact: {type: String},
+    userType: {type: String}
 })
 
 export const User = mongoose.model('userDashboard', userSchema)

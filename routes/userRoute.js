@@ -32,7 +32,7 @@ router.post('/login', async (req, res) => {
         if (!isPassword) {
             return res.status(401).json({ error: 'Invalid user password' })
         }
-        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '20s' })
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '15m' })
         return res.status(201).send(token)
     } catch (error) {
         res.status(500).json({ error: 'Error login' })
@@ -42,10 +42,10 @@ router.post('/login', async (req, res) => {
 // create user POST method
 router.post('/register', async (req, res) => {
     try {
-        if (!req.body.email || !req.body.username || !req.body.password) {
+        if (!req.body.email || !req.body.username || !req.body.password || !req.body.userType) {
             return res.status(400).send({ message: 'sent all fields' })
         }
-        const { email, username, password } = req.body
+        const { email, username, password, userType } = req.body
         const newUser = {
             email,
             username,
@@ -53,7 +53,8 @@ router.post('/register', async (req, res) => {
             avatar: null,
             about: null,
             role: null,
-            contact: null
+            contact: null,
+            userType
         }
         const user = await User.create(newUser)
         return res.status(201).send(user)
