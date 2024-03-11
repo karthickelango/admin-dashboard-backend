@@ -1,12 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors'
-import { dbURL, PORT } from "./config.js";
 import userRoures from "./routes/userRoute.js"
+import dotenv from "dotenv"
 
 const app = express()
 app.use(express.json())
 app.use(cors())
+dotenv.config()
 app.use(express.static('profileImages'))
 
 
@@ -16,10 +17,10 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/', userRoures)
 
-mongoose.connect(dbURL).then(() => {
+mongoose.connect(process.env.dbURL).then(() => {
     console.log("connected to DB")
-    app.listen(PORT, () => {
-        console.log(`Listining port: ${PORT}`)
+    app.listen(process.env.PORT, () => {
+        console.log(`Listining port: ${process.env.PORT}`)
     })
 }).catch((error) => {
     console.log(error)
