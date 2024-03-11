@@ -111,7 +111,7 @@ router.put('/info/:id', async (req, res) => {
         return res.status(201).send({ message: "Updated" })
     }
     catch (error) {
-        console.log(error)
+        console.log(error) 
     }
 })
 export default router
