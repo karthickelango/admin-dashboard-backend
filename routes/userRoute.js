@@ -23,8 +23,8 @@ const upload = multer({ storage })
 // get login POST method 
 router.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body
-        const user = await User.findOne({ username })
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
         if (!user) {
             return res.status(401).json({ error: 'Invalid user name' })
         }
@@ -112,6 +112,23 @@ router.put('/info/:id', async (req, res) => {
     }
     catch (error) {
         console.log(error) 
+    }
+})
+
+
+// delete user
+
+router.delete('/user/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const result = await User.findByIdAndDelete(id)
+        if (!result) {
+            return res.status(404).send({ message: "Not found" })
+        }
+        return res.status(201).send({ message: "Deleted" })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({ message: error.message })
     }
 })
 export default router
