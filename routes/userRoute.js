@@ -26,10 +26,11 @@ router.post('/register', async (req, res) => {
             return res.status(400).send({ message: 'sent all fields' })
         }
         const { email, username, password, userType } = req.body
+        const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = {
             email,
             username,
-            password: password,
+            password: hashedPassword,
             avatar: null,
             about: null,
             role: null,
@@ -54,7 +55,7 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Invalid user name' })
         }
-        const isPassword = await User.findOne({ password })
+        const isPassword = await bcrypt.compare(password, user.password)
         if (!isPassword) {
             return res.status(401).json({ error: 'Invalid user password' })
         }
