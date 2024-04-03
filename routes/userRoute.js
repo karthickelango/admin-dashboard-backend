@@ -2,12 +2,12 @@ import express from 'express'
 import { User } from '../model/userSchema.js'
 import jwt from "jsonwebtoken";
 import multer from 'multer';
+import bcrypt from 'bcrypt'
 
 const router = express.Router()
 const SECRET_KEY = 'key'
 
 // image uploader folder
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         return cb(null, './profileImages')
@@ -18,26 +18,6 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage })
-
-
-// get login POST method 
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body
-        const user = await User.findOne({ email })
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid user name' })
-        }
-        const isPassword = await User.findOne({ password })
-        if (!isPassword) {
-            return res.status(401).json({ error: 'Invalid user password' })
-        }
-        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '15m' })
-        return res.status(201).send(token)
-    } catch (error) {
-        res.status(500).json({ error: 'Error login' })
-    }
-})
 
 // create user POST method
 router.post('/register', async (req, res) => {
@@ -61,6 +41,27 @@ router.post('/register', async (req, res) => {
     } catch (error) {
         console.log(error.message)
         res.status(500).send({ message: error.message })
+    }
+})
+
+
+
+// get login POST method 
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid user name' })
+        }
+        const isPassword = await User.findOne({ password })
+        if (!isPassword) {
+            return res.status(401).json({ error: 'Invalid user password' })
+        }
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '15m' })
+        return res.status(201).send(token)
+    } catch (error) {
+        res.status(500).json({ error: 'Error login' })
     }
 })
 
