@@ -95,6 +95,7 @@ router.get('/:id', async (req, res) => {
 
 // upload user image
 router.put('/upload/:id', upload.single('file'), async (req, res) => {
+    console.log(req.file.filename)
     try {
         const { id } = req.params
         const avatar = await User.findByIdAndUpdate(id, { avatar: req.file.filename })
